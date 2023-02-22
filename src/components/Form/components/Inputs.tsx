@@ -16,6 +16,7 @@ type configObj = {
   message?: string;
   required?: boolean;
   mask?: string;
+  step?: number;
 };
 
 type InputsProps = {
@@ -35,77 +36,100 @@ export default function Inputs(arrElements: InputsProps) {
     </div>
   );
 
-  const renderInput = (obj: configObj) => {
-    if (obj.mask) {
-      return (
-        <>
-          <div key={obj.label} className={`input ${obj.className ?? obj.label}`}>
+  const renderMaskedInputs = ({
+    regex = new RegExp(''),
+    message = '',
+    ...obj
+  }: configObj) => (
+    <>
+      <div key={obj.label} className={`input ${obj.className ?? obj.label}`}>
+        <label htmlFor={obj.label}>{obj.label}:</label>
 
-          <label htmlFor={obj.label}>{obj.label}:</label>
-
-          <Controller
-            name={obj.label}
-            control={controllerHooksForm}
-            render={({ field: { onChange, onBlur } }) => (
-              <MaskedInput
-                mask={obj.mask}
-                name={obj.label}
-                onChange={onChange}
-                onBlur={onBlur}
-              />
-            )}
-            rules={{
-              pattern: {
-                value: obj.regex,
-                message: obj.message
-              }
-            }}
-          />
-        </div>
-        {errors[obj.label]?.message && <p className='error'>{obj.message}</p> }
-        </>
-      );
-    } else {
-      return obj.regex ? (
-        <>
-          <div
-            key={obj.label}
-            className={`input ${obj.className ?? obj.label}`}
-          >
-            <label htmlFor={obj.label}>{obj.label}:</label>
-            <input
-              id={obj.label}
-              type={obj.inputType}
-              maxLength={obj.maxLength}
-              {...register(`${obj.label}`, {
-                pattern: {
-                  value: obj.regex,
-                  message: obj.message,
-                },
-              })}
+        <Controller
+          name={obj.label}
+          control={controllerHooksForm}
+          render={({ field: { onChange, onBlur } }) => (
+            <MaskedInput
+              mask={obj.mask || ''}
+              name={obj.label}
+              onChange={onChange}
+              onBlur={onBlur}
+              maskChar={''}
             />
-          </div>
-          {errors[obj.label] && <p className="error">{errors.Email.message}</p>}
-        </>
-      ) : (
+          )}
+          rules={{
+            pattern: {
+              value: regex,
+              message: message,
+            },
+          }}
+        />
+      </div>
+      {errors[obj.label]?.message && <p className="error">{message}</p>}
+    </>
+  );
+
+  const renderInputs = ({
+    regex = new RegExp(''),
+    message = '',
+    ...obj
+  }: configObj) => {
+    return (
+      <>
         <div key={obj.label} className={`input ${obj.className ?? obj.label}`}>
-          <label htmlFor={obj.label}>{obj.label}:</label>
-          <input
-            id={obj.label}
-            type={obj.inputType}
-            {...register(`${obj.label}`)}
-            required={obj.required ? true : false}
-          />
+          {obj.inputType === 'checkbox' ? (
+            <>
+              <span>{obj.label}:</span>
+              <label htmlFor={obj.label} className="switch">
+                <input
+                  id={obj.label}
+                  type={obj.inputType}
+                  maxLength={obj.maxLength}
+                  {...register(`${obj.label}`, {
+                    pattern: {
+                      value: regex,
+                      message: message,
+                    },
+                  })}
+                  required={obj.required}
+                />
+                <span className="slider round"></span>
+              </label>
+            </>
+          ) : (
+            <>
+              <label htmlFor={obj.label}>{obj.label}:</label>
+              <input
+                id={obj.label}
+                type={obj.inputType}
+                maxLength={obj.maxLength}
+                step={obj.step}
+                {...register(`${obj.label}`, {
+                  pattern: {
+                    value: regex,
+                    message: message,
+                  },
+                })}
+                required={obj.required}
+              />
+            </>
+          )}
         </div>
-      );
-    }
+        {errors[obj.label]?.message && <p className="error">{message}</p>}
+      </>
+    );
   };
 
   return (
     <>
-      {arrElements.configArr.map((e) =>
-        e.inputType === 'textarea' ? renderTextArea(e.label) : renderInput(e)
-      )}
+      {arrElements.configArr.map((e) => {
+        if (e.inputType === 'textarea') return renderTextArea(e.label);
+
+        if (e.mask)
+          return renderMaskedInputs(e);
+
+        return renderInputs(e);
+      })}
     </>
   );
 }
