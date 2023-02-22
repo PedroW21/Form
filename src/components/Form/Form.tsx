@@ -5,14 +5,14 @@ import Inputs from './components/Inputs';
 
 const inputs = [
   { label: 'Integer', inputType: 'number' },
-  { label: 'Double/Float', inputType: 'string', className: 'doubleFloat' },
-  { label: 'String', inputType: 'string' },
+  { label: 'Double/Float', inputType: 'text', className: 'doubleFloat' },
+  { label: 'String', inputType: 'text' },
   { label: 'Date', inputType: 'date' },
   { label: 'Time', inputType: 'time' },
   { label: 'Boolean', inputType: 'checkbox' },
   {
     label: 'Email',
-    inputType: 'string',
+    inputType: 'text',
     maxLength: 100,
     regex: /\w+@[a-zA-Z]+\.com(?:\.br)?/gm,
     message: 'Email inválido',
@@ -20,14 +20,14 @@ const inputs = [
   { label: 'Url', inputType: 'url', required: true },
   {
     label: 'CPF',
-    inputType: 'string',
+    inputType: 'text',
     mask: '999.999.999-99',
     regex: /\d{3}\.\d{3}\.\d{3}-\d{2}/gm,
     message: 'CPF inválido!',
   },
   {
     label: 'CNPJ',
-    inputType: 'string',
+    inputType: 'text',
     mask: '99.999.999/9999-99',
     regex: /\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}/gm,
     message: 'CNPJ inválido!',
@@ -58,7 +58,6 @@ export default function Form() {
           errors={errors}
           controllerHooksForm={control}
         />
-
         <input type="submit" />
       </form>
     </div>
