@@ -1,3 +1,4 @@
+import './Inputs.css';
 import {
   UseFormRegister,
   FieldValues,
@@ -125,8 +126,7 @@ export default function Inputs(arrElements: InputsProps) {
       {arrElements.configArr.map((e) => {
         if (e.inputType === 'textarea') return renderTextArea(e.label);
 
-        if (e.mask)
-          return renderMaskedInputs(e);
+        if (e.mask) return renderMaskedInputs(e);
 
         return renderInputs(e);
       })}

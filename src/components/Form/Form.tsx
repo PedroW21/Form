@@ -1,7 +1,7 @@
 import './Form.css';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import Inputs from './components/Inputs';
+import Inputs from './components/Inputs/Inputs';
 
 const inputs = [
   { label: 'Integer', inputType: 'number' },
