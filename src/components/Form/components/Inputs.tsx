@@ -46,16 +46,23 @@ export default function Inputs(arrElements: InputsProps) {
           <Controller
             name={obj.label}
             control={controllerHooksForm}
-            render={({ field: { onChange, value } }) => (
+            render={({ field: { onChange, onBlur } }) => (
               <MaskedInput
                 mask={obj.mask}
                 name={obj.label}
-                value={value}
                 onChange={onChange}
+                onBlur={onBlur}
               />
             )}
+            rules={{
+              pattern: {
+                value: obj.regex,
+                message: obj.message
+              }
+            }}
           />
         </div>
+        {errors[obj.label]?.message && <p className='error'>{obj.message}</p> }
         </>
       );
     } else {
@@ -69,6 +76,7 @@ export default function Inputs(arrElements: InputsProps) {
             <input
               id={obj.label}
               type={obj.inputType}
+              maxLength={obj.maxLength}
               {...register(`${obj.label}`, {
                 pattern: {
                   value: obj.regex,
