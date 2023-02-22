@@ -1,0 +1,58 @@
+.form
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+}
+
+.input
+{
+    display: grid;
+    grid-template-columns: 40% 1fr;
+    align-items: center;
+
+    width: 100%;
+    
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.error
+{
+    font-size: 14px;
+    color: red;
+    font-weight: bold;
+}
+
+.input label 
+{
+    justify-self: end;
+}
+
+.input input 
+{
+    justify-self: start;
+    padding: 2px;
+}
+
+.Text label
+{
+    align-self: flex-start;
+}
+
+.Text textarea
+{
+    resize: none;
+    width: 60%;
+    height: 200px;
+}
+
+/* Specific styles */
+
+.Integer input, .doubleFloat input
+{
+    width: 20%;
+
+    text-align: end;
+}
