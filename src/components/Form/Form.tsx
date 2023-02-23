@@ -62,7 +62,7 @@ export default function Form() {
           register={register}
           errors={errors}
           controllerHooksForm={control}
-        />
+        />,
         <input type="submit" />
       </form>
     </div>
