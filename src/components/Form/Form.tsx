@@ -5,7 +5,7 @@ import Inputs from './components/Inputs/Inputs';
 
 const inputs = [
   { label: 'Integer', inputType: 'number' },
-  { label: 'Double/Float', inputType: 'text', mask: '9999999,9999', className: 'doubleFloat' },
+  { label: 'Double/Float', inputType: 'text', mask: '9999999,9999', className: 'doubleFloat', regex: /\d+/, message: ' '},
   { label: 'String', inputType: 'text' },
   { label: 'Date', inputType: 'date' },
   { label: 'Time', inputType: 'time', step: 1 },
@@ -62,7 +62,8 @@ export default function Form() {
           register={register}
           errors={errors}
           controllerHooksForm={control}
-        />,
+          
+        />
         <input type="submit" />
       </form>
     </div>

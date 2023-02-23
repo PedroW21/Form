@@ -1,34 +1,11 @@
 import './Inputs.css';
-import {
-  UseFormRegister,
-  FieldValues,
-  FieldErrors,
-  Control,
-  Controller,
-} from 'react-hook-form';
-import MaskedInput from 'react-input-mask';
-
-type configObj = {
-  label: string;
-  inputType: string;
-  className?: string;
-  maxLength?: number;
-  regex?: RegExp;
-  message?: string;
-  required?: boolean;
-  mask?: string;
-  step?: number;
-};
-
-type InputsProps = {
-  configArr: configObj[];
-  register: UseFormRegister<FieldValues>;
-  errors: FieldErrors<FieldValues>;
-  controllerHooksForm: Control<FieldValues, any>;
-};
+import { InputsProps, inputAttributes } from './Types';
+import MaskedInputType from './MaskedInputType/MaskedInputType';
+import CheckboxInputType from './CheckBoxInputType/CheckboxInputType';
+import GenericInputType from './GenericInputType/GenericInputType';
 
 export default function Inputs(arrElements: InputsProps) {
-  const { register, errors, controllerHooksForm } = arrElements;
+  const { configArr, register, errors, controllerHooksForm } = arrElements;
 
   const renderTextArea = (label: string) => (
     <div key={label} className={`input ${label}`}>
@@ -37,99 +14,49 @@ export default function Inputs(arrElements: InputsProps) {
     </div>
   );
 
-  const renderMaskedInputs = ({
-    regex = new RegExp(''),
-    message = '',
-    ...obj
-  }: configObj) => (
-    <>
-      <div key={obj.label} className={`input ${obj.className ?? obj.label}`}>
-        <label htmlFor={obj.label}>{obj.label}:</label>
+  const renderMaskedInputs = (input: inputAttributes) => {
+    if (!input.regex || !input.message) return;
 
-        <Controller
-          name={obj.label}
-          control={controllerHooksForm}
-          render={({ field: { onChange, onBlur } }) => (
-            <MaskedInput
-              mask={obj.mask || ''}
-              name={obj.label}
-              onChange={onChange}
-              onBlur={onBlur}
-              maskChar={''}
-            />
-          )}
-          rules={{
-            pattern: {
-              value: regex,
-              message: message,
-            },
-          }}
-        />
-      </div>
-      {errors[obj.label]?.message && <p className="error">{message}</p>}
-    </>
-  );
+    const options = {
+      pattern: {
+        value: input.regex,
+        message: input.message,
+      },
+    };
 
-  const renderInputs = ({
-    regex = new RegExp(''),
-    message = '',
-    ...obj
-  }: configObj) => {
     return (
-      <>
-        <div key={obj.label} className={`input ${obj.className ?? obj.label}`}>
-          {obj.inputType === 'checkbox' ? (
-            <>
-              <span>{obj.label}:</span>
-              <label htmlFor={obj.label} className="switch">
-                <input
-                  id={obj.label}
-                  type={obj.inputType}
-                  maxLength={obj.maxLength}
-                  {...register(`${obj.label}`, {
-                    pattern: {
-                      value: regex,
-                      message: message,
-                    },
-                  })}
-                  required={obj.required}
-                />
-                <span className="slider round"></span>
-              </label>
-            </>
-          ) : (
-            <>
-              <label htmlFor={obj.label}>{obj.label}:</label>
-              <input
-                id={obj.label}
-                type={obj.inputType}
-                maxLength={obj.maxLength}
-                step={obj.step}
-                {...register(`${obj.label}`, {
-                  pattern: {
-                    value: regex,
-                    message: message,
-                  },
-                })}
-                required={obj.required}
-              />
-            </>
-          )}
-        </div>
-        {errors[obj.label]?.message && <p className="error">{message}</p>}
-      </>
+      <MaskedInputType
+        input={input}
+        errors={errors}
+        options={options}
+        controllerHooksForm={controllerHooksForm}
+      />
     );
   };
 
-  return (
-    <>
-      {arrElements.configArr.map((e) => {
-        if (e.inputType === 'textarea') return renderTextArea(e.label);
+  const renderCheckboxInput = (input: inputAttributes) => {
+    return (
+      <CheckboxInputType input={input} register={register} errors={errors} />
+    );
+  };
 
-        if (e.mask) return renderMaskedInputs(e);
+  const renderGenericInput = (input: inputAttributes) => {
+    return (
+      <GenericInputType input={input} errors={errors} register={register} />
+    );
+  };
 
-        return renderInputs(e);
-      })}
-    </>
-  );
+  const renderInputs = (inputs: inputAttributes[]) => {
+    return inputs.map((input) => {
+      if (input.inputType === 'textarea') return renderTextArea(input.label);
+
+      if (input.inputType === 'checkbox') return renderCheckboxInput(input);
+
+      if (input.mask) return renderMaskedInputs(input);
+
+      return renderGenericInput(input);
+    });
+  };
+
+  return <>{renderInputs(configArr)}</>;
 }
