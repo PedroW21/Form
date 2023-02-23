@@ -28,11 +28,14 @@ export type InputProps = {
   input: inputAttributes;
   errors: InputsProps['errors'];
   register: UseFormRegister<FieldValues>;
+  classname: string;
+  options?: { pattern: { value: RegExp; message: string } }
 };
 
 type MaskedInputType = Omit<InputProps, 'register'>;
 
+
 export type MaskedInputOptions = {
   controllerHooksForm: InputsProps['controllerHooksForm'];
-  options: { pattern: { value: RegExp; message: string } };
+  options: { pattern: { value: RegExp; message: string } }
 } & MaskedInputType;

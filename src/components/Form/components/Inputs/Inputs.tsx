@@ -30,19 +30,40 @@ export default function Inputs(arrElements: InputsProps) {
         errors={errors}
         options={options}
         controllerHooksForm={controllerHooksForm}
+        classname={input.label}
       />
     );
   };
 
   const renderCheckboxInput = (input: inputAttributes) => {
     return (
-      <CheckboxInputType input={input} register={register} errors={errors} />
+      <CheckboxInputType
+        input={input}
+        classname={input.label}
+        register={register}
+        errors={errors}
+      />
     );
   };
 
   const renderGenericInput = (input: inputAttributes) => {
+    const classname = 'input ' + input.className;
+
+    const options = {
+      pattern: {
+        value: input.regex || new RegExp(''),
+        message: input.message || ''
+      }
+    };
+
     return (
-      <GenericInputType input={input} errors={errors} register={register} />
+      <GenericInputType
+        input={input}
+        classname={classname}
+        errors={errors}
+        register={register}
+        options={options}
+      />
     );
   };
 
